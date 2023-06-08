@@ -20,4 +20,4 @@ Route::get('/dashboard', function () {
 // AUTH ROUTES
 Route::get('/',[AuthController::class,'loginView'])->name('loginView');
 Route::post('/login',[AuthController::class,'login'])->name('login');
-Route::get('/logout',[AuthController::class,'logout'])->name('logout')->middleware('CommonMiddleware');
+Route::get('/logout',[AuthController::class,'logout'])->name('logout');
