@@ -46,7 +46,7 @@
                     </a>
                 </li>
                 @endif
-                @if(session('user')->role!='manager' && !session('user')->is_admin!='Yes')
+                @if(session('user')->is_admin!='Yes')
                 <li class="nav-item  ">
                     <a href="{{ url('/expenses') }}" class="nav-link {{ Request::is('expenses') ? 'active' : '' }}">
                         <i class="nav-icon fa fa-credit-card"></i>

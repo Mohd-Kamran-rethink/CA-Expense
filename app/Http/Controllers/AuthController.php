@@ -55,6 +55,9 @@ class AuthController extends Controller
         $today = Carbon::now()->format('Y-m-d');
         $currentMonthStart = Carbon::now()->startOfMonth();
         $currentMonthEnd = Carbon::now()->endOfMonth();
+if(session('user')->is_admin!='Yes')
+{
+
 
         // Retrieve daily expenses in INR
         $dailyExpenseSumINR = Expense::where('user_id', '=', session('user')->id)
@@ -71,7 +74,7 @@ class AuthController extends Controller
         // Calculate the total daily expense in INR equivalent
         $totalDailyExpense = $dailyExpenseSumINR + ($dailyExpenseSumAED * 22.45);
         // monthy expsene
-        
+
         // Retrieve monthly expenses in INR
         $monthlyExpenseSumINR = Expense::where('user_id', '=', session('user')->id)
             ->where('currency_type', '=', 'rupee')
@@ -86,18 +89,18 @@ class AuthController extends Controller
         $totalMonthlyExpense = $monthlyExpenseSumINR + ($monthlyExpenseSumAED * 22.45);
         // total
         // Retrieve monthly expenses in INR
-         $TotalExpenseSumINR = Expense::where('user_id', '=', session('user')->id)
-         ->where('currency_type', '=', 'rupee')
-         ->sum('amount');
+        $TotalExpenseSumINR = Expense::where('user_id', '=', session('user')->id)
+            ->where('currency_type', '=', 'rupee')
+            ->sum('amount');
         // Retrieve Total expenses in AED
         $TotalExpenseSumAED = Expense::where('user_id', '=', session('user')->id)
-         ->where('currency_type', '=', 'aed')
-         ->sum('amount');
+            ->where('currency_type', '=', 'aed')
+            ->sum('amount');
         // Calculate the total Total expenses in INR equivalent
-     $totalExpense = $TotalExpenseSumINR + ($TotalExpenseSumAED * 22.45);
-    
-    
-    
+        $totalExpense = $TotalExpenseSumINR + ($TotalExpenseSumAED * 22.45);
+
+
+
         //  creadits
         // Retrieve daily expenses in INR
         $dailyCreditSumINR = Expense::where('creditor_id', '=', session('user')->id)
@@ -113,7 +116,7 @@ class AuthController extends Controller
         // Calculate the total daily expense in INR equivalent
         $totalDailyCredit = $dailyCreditSumINR + ($dailyCreditSumAED * 22.45);
         // monthy expsene
-        
+
         // Retrieve monthly expenses in INR
         $monthlyCreditSumINR = Expense::where('creditor_id', '=', session('user')->id)
             ->where('currency_type', '=', 'rupee')
@@ -128,15 +131,20 @@ class AuthController extends Controller
         $totalMonthlyCredit = $monthlyCreditSumINR + ($monthlyCreditSumAED * 22.45);
         // total
         // Retrieve monthly expenses in INR
-         $TotalCreditSumINR = Expense::where('creditor_id', '=', session('user')->id)
-         ->where('currency_type', '=', 'rupee')
-         ->sum('amount');
+        $TotalCreditSumINR = Expense::where('creditor_id', '=', session('user')->id)
+            ->where('currency_type', '=', 'rupee')
+            ->sum('amount');
         // Retrieve Total expenses in AED
         $TotalCreditSumAED = Expense::where('creditor_id', '=', session('user')->id)
-         ->where('currency_type', '=', 'aed')
-         ->sum('amount');
+            ->where('currency_type', '=', 'aed')
+            ->sum('amount');
         // Calculate the total Total expenses in INR equivalent
-     $totalCredit = $TotalCreditSumINR + ($TotalCreditSumAED * 22.45);
-        return view('Admin.Dashboard.index', compact('totalCredit','totalDailyCredit','totalMonthlyCredit','totalExpense','totalDailyExpense','totalMonthlyExpense'));
+        $totalCredit = $TotalCreditSumINR + ($TotalCreditSumAED * 22.45);
+}
+else
+{
+    
+}
+        return view('Admin.Dashboard.index', compact('totalCredit', 'totalDailyCredit', 'totalMonthlyCredit', 'totalExpense', 'totalDailyExpense', 'totalMonthlyExpense'));
     }
 }
