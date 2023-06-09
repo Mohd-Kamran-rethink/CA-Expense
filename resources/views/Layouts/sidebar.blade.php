@@ -31,15 +31,7 @@
                             </p>
                         </a>
                     </li>
-                    <li class="nav-item  ">
-                        <a href="{{ url('/expenses/todays') }}"
-                            class="nav-link {{ Request::is('/expenses/todays') ? 'active' : '' }}">
-                            <i class="nav-icon fa fa-credit-card"></i>
-                            <p>
-                                Today's Expenses
-                            </p>
-                        </a>
-                    </li>
+                   
                 @endif
                 {{-- agr user ko department assignged hai to hji  --}}
                 
