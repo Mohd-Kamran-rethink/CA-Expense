@@ -172,7 +172,7 @@ class ExpenseController extends Controller
             $html = '';
             $expenseTypes = ExpenseType::where('department_id', '=', $req->department)->get();
             $html = '<label>Expense Type<span style="color:red">*</span></label>
-              <select  name="expensse_type" id="expense-type" class="form-control">
+              <select  name="expensse_type" id="expense-type" class="form-control searchOptions">
             <option value="0">--Choose--</option>';
 
             foreach ($expenseTypes as $type) {

@@ -23,7 +23,7 @@
                             <div class="form-group">
                                 <label>Department<span style="color:red">*</span></label>
                                 <select onchange="renderExpenseType(this.value)" name="department_id" id=""
-                                    class="form-control">
+                                    class="form-control searchOptions">
                                     <option value="0">--Choose--</option>
                                     @foreach ($departments as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
@@ -41,7 +41,7 @@
                         <div class="col-xs-12 col-md-4">
                             <div class="form-group" id="expense-type-render">
                                 <label>Expense Type<span style="color:red">*</span></label>
-                                <select disabled name="expensse_type" id="expense-type" class="form-control">
+                                <select disabled name="expensse_type" id="expense-type" class="form-control searchOptions">
                                     <option value="0">--Choose--</option>
                                     @foreach ($expenseTypes as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
@@ -74,7 +74,7 @@
                         <div class="col-xs-12 col-md-4">
                             <div class="form-group">
                                 <label>Credited To</label>
-                                <select name="creditor_id" id="creditor_id" class="form-control">
+                                <select name="creditor_id" id="creditor_id" class="form-control searchOptions">
                                     <option value="0">--Choose--</option>
                                     @foreach ($users as $item)
                                         @if ($item->is_admin == 'Yes')
@@ -96,7 +96,7 @@
                         <div class="col-xs-12 col-md-4">
                             <div class="form-group">
                                 <label>Transaction Type<span style="color:red">*</span></label>
-                                <select name="transactionType" id="transactionType" class="form-control">
+                                <select name="transactionType" id="transactionType" class="form-control searchOptions">
                                     <option value="0">--Choose--</option>
                                     <option value="Cash">Cash</option>
                                     <option value="Bank">Bank</option>
@@ -111,7 +111,7 @@
                         <div class="col-xs-12 col-md-4">
                             <div class="form-group">
                                 <label>Debiter Bank<span style="color:red">*</span></label>
-                                <select name="bank_id" id="bank_id" class="form-control">
+                                <select name="bank_id" id="bank_id" class="form-control searchOptions">
                                     <option value="0">--Choose--</option>
                                     @foreach ($banks as $item)
                                         <option value="{{ $item->id }}">
