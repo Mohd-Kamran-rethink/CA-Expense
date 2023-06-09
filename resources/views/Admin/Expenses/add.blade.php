@@ -70,14 +70,18 @@
                                 @enderror
                             </div>
                         </div>
-                        
+
                         <div class="col-xs-12 col-md-4">
                             <div class="form-group">
                                 <label>Credited To</label>
                                 <select name="creditor_id" id="creditor_id" class="form-control">
                                     <option value="0">--Choose--</option>
                                     @foreach ($users as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        @if ($item->is_admin == 'Yes')
+                                            @continue
+                                        @endif
+                                        <option value="{{ $item->id }}" style="text-transform: capitalize">{{ $item->name }} - (<span >{{ $item->role }}</span>)
+                                        </option>
                                     @endforeach
                                 </select>
 
@@ -88,7 +92,7 @@
                                 @enderror
                             </div>
                         </div>
-                        
+
                         <div class="col-xs-12 col-md-4">
                             <div class="form-group">
                                 <label>Transaction Type<span style="color:red">*</span></label>
@@ -109,11 +113,12 @@
                                 <label>Debiter Bank<span style="color:red">*</span></label>
                                 <select name="bank_id" id="bank_id" class="form-control">
                                     <option value="0">--Choose--</option>
-                                        @foreach ($banks as $item)
-                                    <option value="{{$item->id}}">{{$item->account_number.' - ('.$item->holder_name    .')'}}</option>
+                                    @foreach ($banks as $item)
+                                        <option value="{{ $item->id }}">
+                                            {{ $item->account_number . ' - (' . $item->holder_name . ')' }}</option>
                                     @endforeach
                                 </select>
-                                        
+
                                 @error('bank_id')
                                     <span class="text-danger">
                                         {{ $message }}
@@ -149,7 +154,7 @@
 
                         <div class="col-4">
                             <div class="form-group">
-                                <label>Remark</label>   
+                                <label>Remark</label>
                                 <textarea name="remark" id="" cols="1" rows="" class="form-control"></textarea>
                                 @error('remark')
                                     <span class="text-danger">

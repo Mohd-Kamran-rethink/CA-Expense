@@ -118,10 +118,10 @@ class ExpenseController extends Controller
     }
     public function addExpenseForm()
     {
-        $expenseTypes = ExpenseType::get();
-        $departments = Department::get();
-        $users = User::get();
-        $banks = BankDetail::get();
+        $expenseTypes = ExpenseType::orderBy('expense_types.name','asc')->get();
+        $departments = Department::orderBy('departments.name','asc')->get();
+        $users = User::orderBy('name','asc')->get();
+        $banks = BankDetail::orderBy('holder_name','asc')->get();
         return view('Admin.Expenses.add', compact('banks', 'users', 'departments', 'expenseTypes'));
     }
     public function addExpense(Request $req)
