@@ -25,7 +25,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-header d-flex justify-content-between mx-0 px-0">
-                    <form action="{{ url('reports/leads') }}" method="GET" id="search-form"
+                    <form action="{{ url('expenses') }}" method="GET" id="search-form"
                         class="filters d-flex flex-row col-11 pl-0 mx-0">
 
                         <div class="col-2 ">
@@ -172,6 +172,21 @@
         function manageModal(id) {
             $('#modal-default').modal('show')
             $('#deleteInput').val(id)
+        }
+        const searchData = () => {
+            event.preventDefault();
+            const url = new URL(window.location.href);
+            const currency = $('#currency').val();
+            const transaction_type = $('#transaction_type').val();
+            const expense_type = $('#expense_type').val();
+            const to_date = $('#to_date').val();
+            const from_date = $('#from_date').val();
+            url.searchParams.set('from_date', from_date);
+            url.searchParams.set('to_date', to_date ?? '');
+            url.searchParams.set('expense_type', expense_type ?? '');
+            url.searchParams.set('transaction_type', transaction_type ?? '');
+            url.searchParams.set('currency', currency ?? '');
+            $('#search-form').attr('action', url.toString()).submit();
         }
     </script>
 @endsection
