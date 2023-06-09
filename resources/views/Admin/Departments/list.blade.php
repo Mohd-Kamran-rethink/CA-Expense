@@ -18,10 +18,7 @@
             @endif
         </div>
     </section>
-
-
-
-    <section class="content">
+   <section class="content">
         <div class="card">
             <div class="card-body">
                 <div class="mb-3 d-flex justify-content-between align-items-centers">
