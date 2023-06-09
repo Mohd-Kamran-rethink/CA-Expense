@@ -1,0 +1,155 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Bank;
+use App\BankDetail;
+use App\Department;
+use App\Expense;
+use App\ExpenseType;
+use Illuminate\Foundation\Auth\User;
+use Illuminate\Http\Request;
+
+class ExpenseController extends Controller
+{
+    public function list(Request $req)
+    {
+        $expenses = ExpenseType::orderBy('name', 'asc')->get();
+        $department=Department::where('user_id',session('user')->id)->first();
+        return view('Admin.ExpenseType.list', compact('expenses','department'));
+    }
+    public function delete(Request $req)
+    {
+        $expese = ExpenseType::find($req->deleteId);
+        $result = $expese->delete();
+        if ($result) {
+            return redirect('/expense-type')->with(['msg-success' => 'Expense type has been deleted.']);
+        } else {
+            return redirect('/expense-type')->with(['msg-error' => 'Something went wrong could not delete source.']);
+        }
+    }
+    public function addForm()
+    {
+        $department=Department::where('user_id',session('user')->id)->first();
+        return view('Admin.ExpenseType.add',compact('department'));
+    }
+    public function editForm(Request $req)
+    {
+        $id = $req->query('id');
+        $department=Department::where('user_id',session('user')->id)->first();
+        $expenseType = ExpenseType::find($id);
+        return view('Admin.ExpenseType.add', compact('expenseType','department'));
+    }
+    public function add(Request $req)
+    {
+        $user = session('user');
+        $expenseTYpe = new ExpenseType();
+        $expenseTYpe->name = $req->name;
+        $expenseTYpe->department_id = $user->assigned_department;
+        $result = $expenseTYpe->save();
+        if ($result) {
+            return redirect('/expense-type')->with(['msg-success' => 'Expense type has been added.']);
+        } else {
+            return redirect('/expense-type')->with(['msg-error' => 'Something went wrong could not add expense type.']);
+        }
+    }
+    public function edit(Request $req)
+    {
+        $expenseTYpe = ExpenseType::find($req->expenseTypeId);;
+        $expenseTYpe->name = $req->name;
+        $result = $expenseTYpe->save();
+        if ($result) {
+            return redirect('/expense-type')->with(['msg-success' => 'Expense type has been updated.']);
+        } else {
+            return redirect('/expense-type')->with(['msg-error' => 'Something went wrong could not update expense type.']);
+        }
+    }
+    // expesesn
+    public function listMyExpenses(Request $req)
+    {
+        $expenses = Expense::join('expense_types', 'expenses.expense_type_id', '=', 'expense_types.id')
+                            ->join('departments', 'expenses.department_id', '=', 'departments.id')
+                            ->select('expenses.*','departments.name as departmenName','expense_types.name as expenseType')
+            ->where('expenses.user_id', '=', session('user')->id)
+            ->get();
+        
+        return view('Admin.Expenses.list', compact('expenses'));
+    }
+    public function addExpenseForm()
+    {
+        $expenseTypes = ExpenseType::get();
+        $departments = Department::get();
+        $users=User::get();
+        $banks=BankDetail::get();
+        return view('Admin.Expenses.add', compact('banks','users','departments', 'expenseTypes'));
+    }
+    public function addExpense(Request $req)
+    {
+        $expense = new Expense();
+        $expense->user_id = session('user')->id;
+        $expense->department_id =$req->department_id;
+        $expense->expense_type_id = $req->expensse_type;
+        $expense->currency_type = $req->currency;
+        $expense->creditor_id = $req->creditor_id;
+        $expense->bank_id = $req->bank_id;
+        $expense->transaction_type = $req->transactionType;
+        $expense->amount = $req->amount;
+        $expense->remark = $req->remark;
+        if($req->file('attatchement'))
+        {
+            // Get filename with the extension
+            $filenameWithExt = $req->file('attatchement')->getClientOriginalName();
+            //Get just filename
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            // Get just ext
+            $extension = $req->file('attatchement')->getClientOriginalExtension();
+            // Filename to store
+            $Image = $filename.'_'.time().'.'.$extension;
+            // Upload Image
+            $path = $req->file('attatchement')->storeAs('public/Expense/Attachemnt',$Image);
+            $expense->attatchement=$Image;
+        }
+        $result = $expense->save();
+        if ($result) {
+            return redirect('/expenses')->with(['msg-success' => 'Expense  has been updated.']);
+        } else {
+            return redirect('/expenses')->with(['msg-error' => 'Something went wrong could not update expense .']);
+        }
+    }
+    public function deleteExpense(Request $req)
+    {
+        $expense = Expense::find($req->deleteId);
+        $result = $expense->delete();
+        if ($result) {
+            return redirect('/expenses')->with(['msg-success' => 'Expense  has been deleted.']);
+        } else {
+            return redirect('/expenses')->with(['msg-error' => 'Something went wrong could not delete expense .']);
+        }
+    }
+    public function renderExpensesType(Request $req)
+    {
+        if ($req->ajax()) {
+            $html = '';
+            $expenseTypes = ExpenseType::where('department_id', '=', $req->department)->get();
+            $html = '<label>Expense Type<span style="color:red">*</span></label>
+              <select  name="expensse_type" id="expense-type" class="form-control">
+            <option value="0">--Choose--</option>';
+
+            foreach ($expenseTypes as $type) {
+                $html .= '<option value=' . $type->id . '>' . $type->name . '</option>';
+            }
+            '</select>';
+            return $html;
+        }
+    }
+    public function downloadAttatchment($id)
+    {
+        $expense=Expense::find($id);
+        $file = public_path('storage/Expense/Attachemnt/'.$expense->attatchement);
+    
+        $headers = [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ];
+        return response()->download($file, $expense->attatchement, $headers);
+    }
+}

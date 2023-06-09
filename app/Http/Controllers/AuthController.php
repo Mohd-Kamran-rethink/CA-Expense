@@ -25,13 +25,12 @@ class AuthController extends Controller
     public function login(Request $req)
     {
         // roles allowerd in CA-customer project
-        $allowedRoles = ['manager', 'agent'];
         $req->validate([
             'email' => 'required',
             'password' => 'required'
         ]);
         $user = User::where('email', '=', $req->email)->first();
-        if ($user && in_array($user->role, $allowedRoles)) {
+        if ($user ) {
             if (Hash::check($req->password, $user->password)) {
                 session()->put('user', $user);
                 return redirect('/dashboard');

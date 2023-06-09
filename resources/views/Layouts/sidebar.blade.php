@@ -21,15 +21,29 @@
                         </p>
                     </a>
                 </li>
-                <li class="nav-item  ">
-                    <a href="{{ url('/expense-type') }}"
-                        class="nav-link {{ Request::is('expense-type') ? 'active' : '' }}">
-                        <i class="nav-icon fa fa-credit-card"></i>
-                        <p>
-                            My Expense
-                        </p>
-                    </a>
-                </li>
+                @if (($user->role == 'manager'||$user->role == 'expense') && $user->is_admin == 'Yes')
+                    <li class="nav-item  ">
+                        <a href="{{ url('/departments') }}"
+                            class="nav-link {{ Request::is('departments') ? 'active' : '' }}">
+                            <i class="nav-icon fa fa-th-large"></i>
+                            <p>
+                                Departments
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item  ">
+                        <a href="{{ url('/expenses/todays') }}"
+                            class="nav-link {{ Request::is('/expenses/todays') ? 'active' : '' }}">
+                            <i class="nav-icon fa fa-credit-card"></i>
+                            <p>
+                                Today's Expenses
+                            </p>
+                        </a>
+                    </li>
+                @endif
+                {{-- agr user ko department assignged hai to hji  --}}
+                
+                @if($user->assigned_department)
                 <li class="nav-item  ">
                     <a href="{{ url('/expense-type') }}"
                         class="nav-link {{ Request::is('expense-type') ? 'active' : '' }}">
@@ -39,29 +53,16 @@
                         </p>
                     </a>
                 </li>
-                {{-- <li
-                class="nav-item {{ Request::is('deposit-banker') || Request::is('withdrawal-banker') || Request::is('depositers') || Request::is('withdrawrers') ? 'menu-is-opening menu-open' : '' }}">
-                <a href="#"
-                   class="nav-link {{ Request::is('deposit-banker') || Request::is('withdrawal-banker') || Request::is('depositers') || Request::is('withdrawrers') ? 'active' : '' }}">
-                   <i class="nav-icon fa fa-users"></i>
-                   <p>
-                      Agents
-                      <i class="right fas fa-angle-left"></i>
-                   </p>
-                </a>
-                <ul class="nav nav-treeview"
-                   style="display: {{ Request::is('deposit-banker') || Request::is('withdrawal-banker') || Request::is('depositers') || Request::is('withdrawrers') ? 'block' : 'none' }}">
-                   <li class="nav-item  ">
-                      <a href="{{ url('/deposit-banker') }}"
-                         class="nav-link {{ Request::is('deposit-banker') ? 'active' : '' }}">
-                         <p>
-                            Deposit Banker
-                         </p>
-                         <span class="badge badge-info right">{{$depositBanker??0}}</span>
-                      </a>
-                   </li>
-                </ul>
-             </li> --}}
+                <li class="nav-item  ">
+                    <a href="{{ url('/expenses') }}" class="nav-link {{ Request::is('expenses') ? 'active' : '' }}">
+                        <i class="nav-icon fa fa-credit-card"></i>
+                        <p>
+                            My Expense
+                        </p>
+                    </a>
+                </li>
+            
+                @endif
             </ul>
         </nav>
     </div>
