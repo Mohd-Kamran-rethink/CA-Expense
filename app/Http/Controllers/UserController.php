@@ -13,5 +13,4 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
-   
 }

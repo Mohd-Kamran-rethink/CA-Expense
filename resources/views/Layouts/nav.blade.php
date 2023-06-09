@@ -22,11 +22,11 @@
         <li class="nav-item dropdown ">
             <a class="nav-link d-flex flex-row align-items-center " data-toggle="dropdown" href="#">
                 <i class="far fa-user p-2"></i>
-                {{session('user')->name}}
+                {{ session('user')->name }}
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                 <div class="dropdown-divider"></div>
-                
+
                 <a href="{{ url('/logout') }}" class="dropdown-item">
                     <i class="fas fa-power-off mr-2"></i>Logout
                 </a>

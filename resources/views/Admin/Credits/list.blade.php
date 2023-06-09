@@ -66,8 +66,10 @@
                             <label for="">Currency</label>
                             <select name="currency" id="currency" class="form-control">
                                 <option value="">--Choose--</option>
-                                <option value="rupee" {{ isset($currency) && $currency == 'rupee' ? 'selected' : '' }}>Rupee</option>
-                                <option value="aed" {{ isset($currency) && $currency == 'aed' ? 'selected' : '' }}>AED</option>
+                                <option value="rupee" {{ isset($currency) && $currency == 'rupee' ? 'selected' : '' }}>
+                                    Rupee</option>
+                                <option value="aed" {{ isset($currency) && $currency == 'aed' ? 'selected' : '' }}>AED
+                                </option>
                             </select>
 
                         </div>

@@ -13,12 +13,14 @@ use Illuminate\Http\Request;
 
 class ExpenseController extends Controller
 {
+    // list expense type
     public function list(Request $req)
     {
         $expenses = ExpenseType::orderBy('name', 'asc')->get();
         $department = Department::where('user_id', session('user')->id)->first();
         return view('Admin.ExpenseType.list', compact('expenses', 'department'));
     }
+    // delelte expense type
     public function delete(Request $req)
     {
         $expese = ExpenseType::find($req->deleteId);
@@ -29,11 +31,13 @@ class ExpenseController extends Controller
             return redirect('/expense-type')->with(['msg-error' => 'Something went wrong could not delete source.']);
         }
     }
+    // add form expense type
     public function addForm()
     {
         $department = Department::where('user_id', session('user')->id)->first();
         return view('Admin.ExpenseType.add', compact('department'));
     }
+    // edit form expense type 
     public function editForm(Request $req)
     {
         $id = $req->query('id');
@@ -41,6 +45,7 @@ class ExpenseController extends Controller
         $expenseType = ExpenseType::find($id);
         return view('Admin.ExpenseType.add', compact('expenseType', 'department'));
     }
+    // add expense-type
     public function add(Request $req)
     {
         $user = session('user');
@@ -54,6 +59,7 @@ class ExpenseController extends Controller
             return redirect('/expense-type')->with(['msg-error' => 'Something went wrong could not add expense type.']);
         }
     }
+    // edit expense types
     public function edit(Request $req)
     {
         $expenseTYpe = ExpenseType::find($req->expenseTypeId);;
@@ -65,7 +71,7 @@ class ExpenseController extends Controller
             return redirect('/expense-type')->with(['msg-error' => 'Something went wrong could not update expense type.']);
         }
     }
-    // expesesn
+    // expesesses
     public function listMyExpenses(Request $req)
     {
         $expenses = Expense::join('expense_types', 'expenses.expense_type_id', '=', 'expense_types.id')
@@ -116,14 +122,16 @@ class ExpenseController extends Controller
         $endDate = $endDate->toDateString();
         return view('Admin.Expenses.list', compact('endDate', 'startDate', 'currency', 'transaction_type', 'expense_type', 'expenseTypes', 'expenses'));
     }
+    // add expense form
     public function addExpenseForm()
     {
-        $expenseTypes = ExpenseType::orderBy('expense_types.name','asc')->get();
-        $departments = Department::orderBy('departments.name','asc')->get();
-        $users = User::orderBy('name','asc')->get();
-        $banks = BankDetail::orderBy('holder_name','asc')->get();
+        $expenseTypes = ExpenseType::orderBy('expense_types.name', 'asc')->get();
+        $departments = Department::orderBy('departments.name', 'asc')->get();
+        $users = User::orderBy('name', 'asc')->get();
+        $banks = BankDetail::orderBy('holder_name', 'asc')->get();
         return view('Admin.Expenses.add', compact('banks', 'users', 'departments', 'expenseTypes'));
     }
+    // add expenses main function
     public function addExpense(Request $req)
     {
         $expense = new Expense();
@@ -156,6 +164,7 @@ class ExpenseController extends Controller
             return redirect('/expenses')->with(['msg-error' => 'Something went wrong could not update expense .']);
         }
     }
+    // delete expenses
     public function deleteExpense(Request $req)
     {
         $expense = Expense::find($req->deleteId);
@@ -166,6 +175,7 @@ class ExpenseController extends Controller
             return redirect('/expenses')->with(['msg-error' => 'Something went wrong could not delete expense .']);
         }
     }
+    // ajax render expense types
     public function renderExpensesType(Request $req)
     {
         if ($req->ajax()) {
@@ -182,6 +192,7 @@ class ExpenseController extends Controller
             return $html;
         }
     }
+    // donwnload attatchement
     public function downloadAttatchment($id)
     {
         $expense = Expense::find($id);

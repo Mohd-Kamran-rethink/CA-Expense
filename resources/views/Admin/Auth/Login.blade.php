@@ -7,7 +7,7 @@
     <title>CA Expense | Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
-        
+
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
 </head>
@@ -24,8 +24,9 @@
                             @csrf
                             <div class="mb-3">
                                 {{-- <label for="email" class="form-label">Email address</label> --}}
-                                <input type="email" name="email" id="form2Example1" placeholder="Enter your email address"
-                                    class="form-control" value="{{ old('email') }}" />
+                                <input type="email" name="email" id="form2Example1"
+                                    placeholder="Enter your email address" class="form-control"
+                                    value="{{ old('email') }}" />
                                 @if (session()->has('msg-error-username'))
                                     <span class="text-danger">{{ session('msg-error-username') }}</span>
                                 @endif
@@ -33,7 +34,8 @@
                             </div>
                             <div class="mb-1">
                                 {{-- <label for="password" class="form-label">Password</label> --}}
-                                <input type="password" id="form2Example2" name="password" class="form-control" placeholder="Password" />
+                                <input type="password" id="form2Example2" name="password" class="form-control"
+                                    placeholder="Password" />
                                 @error('password')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
@@ -41,7 +43,8 @@
                                     <span class="text-danger">{{ session('msg-error-password') }}</span>
                                 @endif
                             </div>
-                            <span class="mb-3"> <a href="#" style="text-decoration: none">Forgot Password?</a></span>
+                            <span class="mb-3"> <a href="#" style="text-decoration: none">Forgot
+                                    Password?</a></span>
 
                             <div class="mt-3 float-right">
                                 <button type="submit" class="btn btn-primary " style="float:right">Login</button>

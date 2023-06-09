@@ -42,13 +42,13 @@
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed control-sidebar-slide-open sidebar-mini ">
-<style>
-    .select2-selection {
-                padding: 18px !important;
-                display: flex !important;
-                align-items: center !important;
-            }
-</style>
+    <style>
+        .select2-selection {
+            padding: 18px !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+    </style>
     <!-- Page Wrapper -->
     <div id="wrapper">
         @include('Layouts.sidebar')
@@ -58,7 +58,7 @@
         </div>
     </div>
 
-    
+
     <!-- jQuery -->
     <script src="{{ asset('AdminTheme/plugins/jquery/jquery.min.js') }}"></script>
 

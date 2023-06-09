@@ -21,7 +21,7 @@
                         </p>
                     </a>
                 </li>
-                @if (($user->role == 'manager'||$user->role == 'expense') && $user->is_admin == 'Yes')
+                @if (($user->role == 'manager' || $user->role == 'expense') && $user->is_admin == 'Yes')
                     <li class="nav-item  ">
                         <a href="{{ url('/departments') }}"
                             class="nav-link {{ Request::is('departments') ? 'active' : '' }}">
@@ -31,38 +31,37 @@
                             </p>
                         </a>
                     </li>
-                   
                 @endif
                 {{-- agr user ko department assignged hai to hji  --}}
-                
-                @if($user->assigned_department)
-                <li class="nav-item  ">
-                    <a href="{{ url('/expense-type') }}"
-                        class="nav-link {{ Request::is('expense-type') ? 'active' : '' }}">
-                        <i class="nav-icon fa fa-th-large"></i>
-                        <p>
-                            Expense Type
-                        </p>
-                    </a>
-                </li>
+
+                @if ($user->assigned_department)
+                    <li class="nav-item  ">
+                        <a href="{{ url('/expense-type') }}"
+                            class="nav-link {{ Request::is('expense-type') ? 'active' : '' }}">
+                            <i class="nav-icon fa fa-th-large"></i>
+                            <p>
+                                Expense Type
+                            </p>
+                        </a>
+                    </li>
                 @endif
-                @if(session('user')->is_admin!='Yes')
-                <li class="nav-item  ">
-                    <a href="{{ url('/expenses') }}" class="nav-link {{ Request::is('expenses') ? 'active' : '' }}">
-                        <i class="nav-icon fa fa-credit-card"></i>
-                        <p>
-                            My Expense
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item  ">
-                    <a href="{{ url('/credits') }}" class="nav-link {{ Request::is('credits') ? 'active' : '' }}">
-                        <i class="nav-icon fa fa-credit-card"></i>
-                        <p>
-                            My Credits
-                        </p>
-                    </a>
-                </li>
+                @if (session('user')->is_admin != 'Yes')
+                    <li class="nav-item  ">
+                        <a href="{{ url('/expenses') }}" class="nav-link {{ Request::is('expenses') ? 'active' : '' }}">
+                            <i class="nav-icon fa fa-credit-card"></i>
+                            <p>
+                                My Expense
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item  ">
+                        <a href="{{ url('/credits') }}" class="nav-link {{ Request::is('credits') ? 'active' : '' }}">
+                            <i class="nav-icon fa fa-credit-card"></i>
+                            <p>
+                                My Credits
+                            </p>
+                        </a>
+                    </li>
                 @endif
             </ul>
         </nav>

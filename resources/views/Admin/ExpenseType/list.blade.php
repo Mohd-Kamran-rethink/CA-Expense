@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Expense Types ({{$department->name}})</h1>
+                    <h1>Expense Types ({{ $department->name }})</h1>
                 </div>
             </div>
             @if (session()->has('msg-success'))
@@ -62,13 +62,13 @@
                                                         title="Edit this expense type" class="btn btn-primary"><i
                                                             class="fa fa-pen"></i></a>
                                                     <button title="Delete this expense type"
-                                                        onclick="manageModal({{ $item->id }})"
-                                                        class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                                                        onclick="manageModal({{ $item->id }})" class="btn btn-danger"><i
+                                                            class="fa fa-trash"></i></button>
                                                 </td>
 
 
                                             </tr>
-                                            @empty
+                                        @empty
                                             <tr>
                                                 <td colspan="10" class="text-center">No data</td>
                                             </tr>
@@ -77,7 +77,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                           
+
                         </div>
                     </div>
                 </div>
@@ -96,7 +96,7 @@
                 <form action="{{ url('/expense-type/delete') }}" method="POST">
                     @csrf
                     <input type="hidden" name="deleteId" id="deleteInput">
-                    
+
                     <div class="modal-body">
                         <h4>Are you sure you want to delete this expense type?</h4>
                     </div>
@@ -108,5 +108,4 @@
             </div>
         </div>
     </div>
-   
 @endsection

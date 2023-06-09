@@ -66,8 +66,10 @@
                             <label for="">Currency</label>
                             <select name="currency" id="currency" class="form-control">
                                 <option value="">--Choose--</option>
-                                <option value="rupee" {{ isset($currency) && $currency == 'rupee' ? 'selected' : '' }}>Rupee</option>
-                                <option value="aed" {{ isset($currency) && $currency == 'aed' ? 'selected' : '' }}>AED</option>
+                                <option value="rupee" {{ isset($currency) && $currency == 'rupee' ? 'selected' : '' }}>
+                                    Rupee</option>
+                                <option value="aed" {{ isset($currency) && $currency == 'aed' ? 'selected' : '' }}>AED
+                                </option>
                             </select>
 
                         </div>
@@ -76,10 +78,10 @@
                             <button class="btn btn-success form-control" onclick="searchData()">Filter</button>
                         </div>
                     </form>
-                    <form >
-                        
+                    <form>
+
                         <div>
-                            
+
                             <label for="" style="visibility: hidden;"> d</label>
                             <a href="expenses/add" class="btn btn-primary form-control">Add Expense</a>
                         </div>
@@ -120,7 +122,7 @@
                                                         onclick="manageModal({{ $item->id }})"
                                                         class="btn btn-danger"><i class="fa fa-trash"></i></button>
                                                     @if ($item->attatchement)
-                                                        <a href="{{ url('expenses/download/attatchement/'.$item->id) }}"
+                                                        <a href="{{ url('expenses/download/attatchement/' . $item->id) }}"
                                                             title="Download attatchement" class="btn btn-success"><i
                                                                 class="fa fa-download"></i></a>
                                                     @endif

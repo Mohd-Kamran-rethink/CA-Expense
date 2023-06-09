@@ -16,13 +16,10 @@ class SuperManagerMiddleware
      */
     public function handle($request, Closure $next)
     {
-        $user=User::find(session('user')->id);
-        if($user->role=='manager' && $user->is_admin=='Yes')
-        {
+        $user = User::find(session('user')->id);
+        if ($user->role == 'manager' && $user->is_admin == 'Yes') {
             return $next($request);
-        }
-        else
-        {
+        } else {
             return redirect('/dashboard');
         }
     }

@@ -13,6 +13,7 @@ class AuthController extends Controller
     //NOTE:: There will be 7 roles in the global CA in this project we are only using 5 roles 
     // i.e customer_care_manager,deposit_banker,withdrawal_banker,depositer,withdrawrer 
 
+    // login Form
     public function loginView()
     {
         if (session()->has('user')) {
@@ -21,7 +22,7 @@ class AuthController extends Controller
             return view('Admin.Auth.Login');
         }
     }
-
+    // login validation
     public function login(Request $req)
     {
         // roles allowerd in CA-customer project
@@ -41,7 +42,7 @@ class AuthController extends Controller
             return redirect('/')->with(['msg-error-username' => "Email is not registered with us"]);
         }
     }
-
+    // logout user 
     public function logout()
     {
         $result = session()->remove('user');
@@ -49,102 +50,95 @@ class AuthController extends Controller
             return redirect('/');
         }
     }
+    // dashboard to show expense and credits daily, monthly,and total
     public function dashbaod()
     {
         // dates management
         $today = Carbon::now()->format('Y-m-d');
         $currentMonthStart = Carbon::now()->startOfMonth();
         $currentMonthEnd = Carbon::now()->endOfMonth();
-if(session('user')->is_admin!='Yes')
-{
+        
+            // Retrieve daily expenses in INR
+            $dailyExpenseSumINR = Expense::where('user_id', '=', session('user')->id)
+                ->where('currency_type', '=', 'rupee')
+                ->whereDate('created_at', '=', $today)
+                ->sum('amount');
 
+            // Retrieve daily expenses in AED
+            $dailyExpenseSumAED = Expense::where('user_id', '=', session('user')->id)
+                ->where('currency_type', '=', 'aed')
+                ->whereDate('created_at', '=', $today)
+                ->sum('amount');
 
-        // Retrieve daily expenses in INR
-        $dailyExpenseSumINR = Expense::where('user_id', '=', session('user')->id)
-            ->where('currency_type', '=', 'rupee')
-            ->whereDate('created_at', '=', $today)
-            ->sum('amount');
+            // Calculate the total daily expense in INR equivalent
+            $totalDailyExpense = $dailyExpenseSumINR + ($dailyExpenseSumAED * 22.45);
+            // monthy expsene
 
-        // Retrieve daily expenses in AED
-        $dailyExpenseSumAED = Expense::where('user_id', '=', session('user')->id)
-            ->where('currency_type', '=', 'aed')
-            ->whereDate('created_at', '=', $today)
-            ->sum('amount');
+            // Retrieve monthly expenses in INR
+            $monthlyExpenseSumINR = Expense::where('user_id', '=', session('user')->id)
+                ->where('currency_type', '=', 'rupee')
+                ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
+                ->sum('amount');
+            // Retrieve monthly expenses in AED
+            $monthlyExpenseSumAED = Expense::where('user_id', '=', session('user')->id)
+                ->where('currency_type', '=', 'aed')
+                ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
+                ->sum('amount');
+            // Calculate the total monthly expenses in INR equivalent
+            $totalMonthlyExpense = $monthlyExpenseSumINR + ($monthlyExpenseSumAED * 22.45);
+            // total
+            // Retrieve monthly expenses in INR
+            $TotalExpenseSumINR = Expense::where('user_id', '=', session('user')->id)
+                ->where('currency_type', '=', 'rupee')
+                ->sum('amount');
+            // Retrieve Total expenses in AED
+            $TotalExpenseSumAED = Expense::where('user_id', '=', session('user')->id)
+                ->where('currency_type', '=', 'aed')
+                ->sum('amount');
+            // Calculate the total Total expenses in INR equivalent
+            $totalExpense = $TotalExpenseSumINR + ($TotalExpenseSumAED * 22.45);
 
-        // Calculate the total daily expense in INR equivalent
-        $totalDailyExpense = $dailyExpenseSumINR + ($dailyExpenseSumAED * 22.45);
-        // monthy expsene
+            //creadits
+            // Retrieve daily expenses in INR
+            $dailyCreditSumINR = Expense::where('creditor_id', '=', session('user')->id)
+                ->where('currency_type', '=', 'rupee')
+                ->whereDate('created_at', '=', $today)
+                ->sum('amount');
+            // Retrieve daily expenses in AED
+            $dailyCreditSumAED = Expense::where('creditor_id', '=', session('user')->id)
+                ->where('currency_type', '=', 'aed')
+                ->whereDate('created_at', '=', $today)
+                ->sum('amount');
 
-        // Retrieve monthly expenses in INR
-        $monthlyExpenseSumINR = Expense::where('user_id', '=', session('user')->id)
-            ->where('currency_type', '=', 'rupee')
-            ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
-            ->sum('amount');
-        // Retrieve monthly expenses in AED
-        $monthlyExpenseSumAED = Expense::where('user_id', '=', session('user')->id)
-            ->where('currency_type', '=', 'aed')
-            ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
-            ->sum('amount');
-        // Calculate the total monthly expenses in INR equivalent
-        $totalMonthlyExpense = $monthlyExpenseSumINR + ($monthlyExpenseSumAED * 22.45);
-        // total
-        // Retrieve monthly expenses in INR
-        $TotalExpenseSumINR = Expense::where('user_id', '=', session('user')->id)
-            ->where('currency_type', '=', 'rupee')
-            ->sum('amount');
-        // Retrieve Total expenses in AED
-        $TotalExpenseSumAED = Expense::where('user_id', '=', session('user')->id)
-            ->where('currency_type', '=', 'aed')
-            ->sum('amount');
-        // Calculate the total Total expenses in INR equivalent
-        $totalExpense = $TotalExpenseSumINR + ($TotalExpenseSumAED * 22.45);
+            // Calculate the total daily expense in INR equivalent
+            $totalDailyCredit = $dailyCreditSumINR + ($dailyCreditSumAED * 22.45);
+            // monthy expsene
 
-
-
-        //  creadits
-        // Retrieve daily expenses in INR
-        $dailyCreditSumINR = Expense::where('creditor_id', '=', session('user')->id)
-            ->where('currency_type', '=', 'rupee')
-            ->whereDate('created_at', '=', $today)
-            ->sum('amount');
-        // Retrieve daily expenses in AED
-        $dailyCreditSumAED = Expense::where('creditor_id', '=', session('user')->id)
-            ->where('currency_type', '=', 'aed')
-            ->whereDate('created_at', '=', $today)
-            ->sum('amount');
-
-        // Calculate the total daily expense in INR equivalent
-        $totalDailyCredit = $dailyCreditSumINR + ($dailyCreditSumAED * 22.45);
-        // monthy expsene
-
-        // Retrieve monthly expenses in INR
-        $monthlyCreditSumINR = Expense::where('creditor_id', '=', session('user')->id)
-            ->where('currency_type', '=', 'rupee')
-            ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
-            ->sum('amount');
-        // Retrieve monthly expenses in AED
-        $monthlyCreditSumAED = Expense::where('creditor_id', '=', session('user')->id)
-            ->where('currency_type', '=', 'aed')
-            ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
-            ->sum('amount');
-        // Calculate the total monthly expenses in INR equivalent
-        $totalMonthlyCredit = $monthlyCreditSumINR + ($monthlyCreditSumAED * 22.45);
-        // total
-        // Retrieve monthly expenses in INR
-        $TotalCreditSumINR = Expense::where('creditor_id', '=', session('user')->id)
-            ->where('currency_type', '=', 'rupee')
-            ->sum('amount');
-        // Retrieve Total expenses in AED
-        $TotalCreditSumAED = Expense::where('creditor_id', '=', session('user')->id)
-            ->where('currency_type', '=', 'aed')
-            ->sum('amount');
-        // Calculate the total Total expenses in INR equivalent
-        $totalCredit = $TotalCreditSumINR + ($TotalCreditSumAED * 22.45);
-}
-else
-{
-    
-}
+            // Retrieve monthly expenses in INR
+            $monthlyCreditSumINR = Expense::where('creditor_id', '=', session('user')->id)
+                ->where('currency_type', '=', 'rupee')
+                ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
+                ->sum('amount');
+            // Retrieve monthly expenses in AED
+            $monthlyCreditSumAED = Expense::where('creditor_id', '=', session('user')->id)
+                ->where('currency_type', '=', 'aed')
+                ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
+                ->sum('amount');
+            // Calculate the total monthly expenses in INR equivalent
+            $totalMonthlyCredit = $monthlyCreditSumINR + ($monthlyCreditSumAED * 22.45);
+            // total
+            // Retrieve monthly expenses in INR
+            $TotalCreditSumINR = Expense::where('creditor_id', '=', session('user')->id)
+                ->where('currency_type', '=', 'rupee')
+                ->sum('amount');
+            // Retrieve Total expenses in AED
+            $TotalCreditSumAED = Expense::where('creditor_id', '=', session('user')->id)
+                ->where('currency_type', '=', 'aed')
+                ->sum('amount');
+            // Calculate the total Total expenses in INR equivalent
+            $totalCredit = $TotalCreditSumINR + ($TotalCreditSumAED * 22.45);
+     
+     
         return view('Admin.Dashboard.index', compact('totalCredit', 'totalDailyCredit', 'totalMonthlyCredit', 'totalExpense', 'totalDailyExpense', 'totalMonthlyExpense'));
     }
 }

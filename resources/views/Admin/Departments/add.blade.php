@@ -40,7 +40,7 @@
                                         @if($item->id==1||$item->id==2)
                                             @continue
                                         @endif
-                                        <option value="{{$item->id}}">{{$item->name}}</option>
+                                        <option value="{{$item->id}}" style="text-transform: capitalize">{{$item->name}}</option>
                                     @endforeach
                                 </select>
                                     

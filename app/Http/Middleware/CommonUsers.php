@@ -16,14 +16,10 @@ class CommonUsers
      */
     public function handle($request, Closure $next)
     {
-        if(session('user'))
-        {
+        if (session('user')) {
             return $next($request);
-        }
-        else
-        {
+        } else {
             return redirect('/dashboard');
         }
-
     }
 }

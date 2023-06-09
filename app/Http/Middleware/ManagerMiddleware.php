@@ -16,15 +16,11 @@ class ManagerMiddleware
      */
     public function handle($request, Closure $next)
     {
-        $user=User::find(session('user')->id);
-        if($user->role=='manager' ||$user->role=='customer_care_manager')
-        {
+        $user = User::find(session('user')->id);
+        if ($user->role == 'manager' || $user->role == 'customer_care_manager') {
             return $next($request);
-        }
-        else
-        {
+        } else {
             return redirect('/dashboard');
         }
-
     }
 }

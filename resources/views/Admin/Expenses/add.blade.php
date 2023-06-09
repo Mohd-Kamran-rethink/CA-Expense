@@ -80,7 +80,8 @@
                                         @if ($item->is_admin == 'Yes')
                                             @continue
                                         @endif
-                                        <option value="{{ $item->id }}" style="text-transform: capitalize">{{ $item->name }} - (<span >{{ $item->role }}</span>)
+                                        <option value="{{ $item->id }}" style="text-transform: capitalize">
+                                            {{ $item->name }} - (<span>{{ $item->role }}</span>)
                                         </option>
                                     @endforeach
                                 </select>
