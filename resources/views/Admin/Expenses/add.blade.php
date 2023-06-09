@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>{{ isset($expenses) ? 'Edit Expense Type' : 'Add Expense Type' }}</h1>
+                    <h1>{{ isset($expenses) ? 'Edit Expense' : 'Add Expense' }}</h1>
                     <h6 class="text-danger">* Items marked with an asterisk are required fields and must be completed</h6>
                 </div>
             </div>
@@ -73,7 +73,7 @@
                         
                         <div class="col-xs-12 col-md-4">
                             <div class="form-group">
-                                <label>Creditor</label>
+                                <label>Credited To</label>
                                 <select name="creditor_id" id="creditor_id" class="form-control">
                                     <option value="0">--Choose--</option>
                                     @foreach ($users as $item)

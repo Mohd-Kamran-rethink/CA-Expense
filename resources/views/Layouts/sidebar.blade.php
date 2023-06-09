@@ -61,6 +61,14 @@
                         </p>
                     </a>
                 </li>
+                <li class="nav-item  ">
+                    <a href="{{ url('/credits') }}" class="nav-link {{ Request::is('credits') ? 'active' : '' }}">
+                        <i class="nav-icon fa fa-credit-card"></i>
+                        <p>
+                            My Credits
+                        </p>
+                    </a>
+                </li>
             
                 @endif
             </ul>

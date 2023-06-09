@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Expenses </h1>
+                    <h1>Credits </h1>
                 </div>
             </div>
             @if (session()->has('msg-success'))
@@ -24,7 +24,7 @@
     <section class="content">
         <div class="card">
             <div class="card-body">
-                <div class="card-header d-flex justify-content-between mx-0 px-0">
+                <div class="card-header d-flex justify-content-between px-0 mx-0">
                     <form action="{{ url('reports/leads') }}" method="GET" id="search-form"
                         class="filters d-flex flex-row col-11 pl-0 mx-0">
 
@@ -76,14 +76,7 @@
                             <button class="btn btn-success form-control" onclick="searchData()">Filter</button>
                         </div>
                     </form>
-                    <form >
-                        
-                        <div>
-                            
-                            <label for="" style="visibility: hidden;"> d</label>
-                            <a href="expenses/add" class="btn btn-primary form-control">Add Expense</a>
-                        </div>
-                    </form>
+
 
                 </div>
                 <div class="row">
@@ -105,7 +98,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse ($expenses as $item)
+                                        @forelse ($credits as $item)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $item->amount }}</td>
@@ -116,13 +109,12 @@
                                                 <td>{{ $item->attatchement ? 'Yes' : 'No' }}</td>
                                                 <td>{{ $item->remark }}</td>
                                                 <td>
-                                                    <button title="Delete this expense"
-                                                        onclick="manageModal({{ $item->id }})"
-                                                        class="btn btn-danger"><i class="fa fa-trash"></i></button>
                                                     @if ($item->attatchement)
-                                                        <a href="{{ url('expenses/download/attatchement/'.$item->id) }}"
+                                                        <a href="{{ url('credits/download/attatchement/' . $item->id) }}"
                                                             title="Download attatchement" class="btn btn-success"><i
                                                                 class="fa fa-download"></i></a>
+                                                    @else
+                                                        --
                                                     @endif
                                                 </td>
 
@@ -153,7 +145,7 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <form action="{{ url('/expenses/delete') }}" method="POST">
+                <form action="{{ url('/credits/delete') }}" method="POST">
                     @csrf
                     <input type="hidden" name="deleteId" id="deleteInput">
 
@@ -172,6 +164,21 @@
         function manageModal(id) {
             $('#modal-default').modal('show')
             $('#deleteInput').val(id)
+        }
+        const searchData = () => {
+            event.preventDefault();
+            const url = new URL(window.location.href);
+            const currency = $('#currency').val();
+            const transaction_type = $('#transaction_type').val();
+            const expense_type = $('#expense_type').val();
+            const to_date = $('#to_date').val();
+            const from_date = $('#from_date').val();
+            url.searchParams.set('from_date', from_date);
+            url.searchParams.set('to_date', to_date ?? '');
+            url.searchParams.set('expense_type', expense_type ?? '');
+            url.searchParams.set('transaction_type', transaction_type ?? '');
+            url.searchParams.set('currency', currency ?? '');
+            $('#search-form').attr('action', url.toString()).submit();
         }
     </script>
 @endsection

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CreditsController;
 use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\ExpenseController;
 use Illuminate\Support\Facades\Route;
@@ -48,3 +49,7 @@ Route::middleware('ValidateSuperManager')->prefix('departments')->group(function
     Route::post('/add',[DepartmentsController::class,'add'])->name('add');
     Route::post('/delete',[DepartmentsController::class,'delete'])->name('delete');
 });  
+// credits
+Route::middleware('CommonUsers')->prefix('credits')->group(function () {
+    Route::get('',[CreditsController::class,'list'])->name('list');
+});

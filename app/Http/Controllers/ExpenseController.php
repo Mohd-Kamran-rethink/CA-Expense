@@ -7,6 +7,7 @@ use App\BankDetail;
 use App\Department;
 use App\Expense;
 use App\ExpenseType;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 
@@ -15,8 +16,8 @@ class ExpenseController extends Controller
     public function list(Request $req)
     {
         $expenses = ExpenseType::orderBy('name', 'asc')->get();
-        $department=Department::where('user_id',session('user')->id)->first();
-        return view('Admin.ExpenseType.list', compact('expenses','department'));
+        $department = Department::where('user_id', session('user')->id)->first();
+        return view('Admin.ExpenseType.list', compact('expenses', 'department'));
     }
     public function delete(Request $req)
     {
@@ -30,15 +31,15 @@ class ExpenseController extends Controller
     }
     public function addForm()
     {
-        $department=Department::where('user_id',session('user')->id)->first();
-        return view('Admin.ExpenseType.add',compact('department'));
+        $department = Department::where('user_id', session('user')->id)->first();
+        return view('Admin.ExpenseType.add', compact('department'));
     }
     public function editForm(Request $req)
     {
         $id = $req->query('id');
-        $department=Department::where('user_id',session('user')->id)->first();
+        $department = Department::where('user_id', session('user')->id)->first();
         $expenseType = ExpenseType::find($id);
-        return view('Admin.ExpenseType.add', compact('expenseType','department'));
+        return view('Admin.ExpenseType.add', compact('expenseType', 'department'));
     }
     public function add(Request $req)
     {
@@ -68,26 +69,66 @@ class ExpenseController extends Controller
     public function listMyExpenses(Request $req)
     {
         $expenses = Expense::join('expense_types', 'expenses.expense_type_id', '=', 'expense_types.id')
-                            ->join('departments', 'expenses.department_id', '=', 'departments.id')
-                            ->select('expenses.*','departments.name as departmenName','expense_types.name as expenseType')
+            ->join('departments', 'expenses.department_id', '=', 'departments.id')
+            ->select('expenses.*', 'departments.name as departmenName', 'expense_types.name as expenseType')
             ->where('expenses.user_id', '=', session('user')->id)
             ->get();
-        
-        return view('Admin.Expenses.list', compact('expenses'));
+        $startDate = $req->query('from_date') ?? null;
+        $endDate = $req->query('to_date') ?? null;
+        $expense_type = $req->query('expense_type') ?? null;
+        $transaction_type = $req->query('transaction_type') ?? null;
+        $currency = $req->query('currency') ?? null;
+        $created_from_date = $req->query('created_from_date');
+        if (!$startDate) {
+            $startDate = Carbon::now()->startOfDay();
+            $endDate = Carbon::now()->endOfDay();
+        } else {
+            $startDate = Carbon::createFromFormat('Y-m-d', $startDate)->startOfDay();
+            $endDate = Carbon::createFromFormat('Y-m-d', $endDate)->endOfDay();
+        }
+
+        // query
+        $expenses  = Expense::join('expense_types', 'expenses.expense_type_id', '=', 'expense_types.id')
+            ->join('departments', 'expenses.department_id', '=', 'departments.id')
+            ->select('expenses.*', 'departments.name as departmenName', 'expense_types.name as expenseType')
+            ->where('expenses.user_id', '=', session('user')->id)
+            // conditional
+            ->when($expense_type, function ($query, $expense_type) {
+                $query->where(function ($query) use ($expense_type) {
+                    $query->Where('expenses.expense_type_id', '=', $expense_type);
+                });
+            })
+            ->when($transaction_type, function ($query, $transaction_type) {
+                $query->where(function ($query) use ($transaction_type) {
+                    $query->Where('expenses.transaction_type', '=', $transaction_type);
+                });
+            })
+            ->when($currency, function ($query, $currency) {
+                $query->where(function ($query) use ($currency) {
+                    $query->Where('expenses.currency_type', '=', $currency);
+                });
+            })
+            ->whereDate('expenses.created_at', '>=', date('Y-m-d', strtotime($startDate)))
+            ->whereDate('expenses.created_at', '<=', date('Y-m-d', strtotime($endDate)))
+            ->get();
+        $expenseTypes = ExpenseType::get();
+        $startDate = $startDate->toDateString();
+        $endDate = $endDate->toDateString();
+        return view('Admin.Expenses.list', compact('endDate', 'startDate', 'currency', 'transaction_type', 'expense_type', 'expenseTypes', 'expenses'));
     }
     public function addExpenseForm()
     {
         $expenseTypes = ExpenseType::get();
         $departments = Department::get();
-        $users=User::get();
-        $banks=BankDetail::get();
-        return view('Admin.Expenses.add', compact('banks','users','departments', 'expenseTypes'));
+        $users = User::get();
+        $banks = BankDetail::get();
+        return view('Admin.Expenses.add', compact('banks', 'users', 'departments', 'expenseTypes'));
     }
     public function addExpense(Request $req)
     {
         $expense = new Expense();
         $expense->user_id = session('user')->id;
-        $expense->department_id =$req->department_id;
+        $expense->department_id = $req->department_id;
         $expense->expense_type_id = $req->expensse_type;
         $expense->currency_type = $req->currency;
         $expense->creditor_id = $req->creditor_id;
@@ -95,8 +136,7 @@ class ExpenseController extends Controller
         $expense->transaction_type = $req->transactionType;
         $expense->amount = $req->amount;
         $expense->remark = $req->remark;
-        if($req->file('attatchement'))
-        {
+        if ($req->file('attatchement')) {
             // Get filename with the extension
             $filenameWithExt = $req->file('attatchement')->getClientOriginalName();
             //Get just filename
@@ -104,10 +144,10 @@ class ExpenseController extends Controller
             // Get just ext
             $extension = $req->file('attatchement')->getClientOriginalExtension();
             // Filename to store
-            $Image = $filename.'_'.time().'.'.$extension;
+            $Image = $filename . '_' . time() . '.' . $extension;
             // Upload Image
-            $path = $req->file('attatchement')->storeAs('public/Expense/Attachemnt',$Image);
-            $expense->attatchement=$Image;
+            $path = $req->file('attatchement')->storeAs('public/Expense/Attachemnt', $Image);
+            $expense->attatchement = $Image;
         }
         $result = $expense->save();
         if ($result) {
@@ -144,9 +184,9 @@ class ExpenseController extends Controller
     }
     public function downloadAttatchment($id)
     {
-        $expense=Expense::find($id);
-        $file = public_path('storage/Expense/Attachemnt/'.$expense->attatchement);
-    
+        $expense = Expense::find($id);
+        $file = public_path('storage/Expense/Attachemnt/' . $expense->attatchement);
+
         $headers = [
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         ];
