@@ -92,7 +92,8 @@ class ExpenseController extends Controller
         // query
         $expenses  = Expense::leftjoin('expense_types', 'expenses.expense_type_id', '=', 'expense_types.id')
             ->leftjoin('departments', 'expenses.department_id', '=', 'departments.id')
-            ->select('expenses.*', 'departments.name as departmenName', 'expense_types.name as expenseType')
+            ->leftjoin('bank_details', 'expenses.receiver_bank', '=', 'bank_details.id')
+            ->select('expenses.*', 'departments.name as departmenName', 'expense_types.name as expenseType','bank_details.account_number as recieverBank')
             ->where('expenses.user_id', '=', session('user')->id)
             // conditional
             ->when($expense_type, function ($query, $expense_type) {
@@ -141,7 +142,9 @@ class ExpenseController extends Controller
         $expense->transaction_type = $req->transactionType;
         $expense->currency_type = $req->currency;
         $expense->creditor_id = $req->creditor_id;
+        $expense->bank_id = $req->bank_id;
         $expense->amount = $req->amount;
+        $expense->currency_rate = $req->currency_rate;
         $expense->remark = $req->remark;
         if ($req->file('attatchement')) {
             // Get filename with the extension

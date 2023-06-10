@@ -70,6 +70,8 @@
                                     Rupee</option>
                                 <option value="aed" {{ isset($currency) && $currency == 'aed' ? 'selected' : '' }}>AED
                                 </option>
+                                <option value="usd" {{ isset($currency) && $currency == 'usd' ? 'selected' : '' }}>USD
+                                </option>
                             </select>
 
                         </div>
@@ -97,10 +99,13 @@
                                         <tr>
                                             <th>S.No.</th>
                                             <th>Amount</th>
+                                            <th>Currency</th>
+                                            <th>Curreny Value</th>
+                                            <th>Type</th>
+                                            <th>Tansfer Type</th>
                                             <th>Department</th>
                                             <th>Expense Type</th>
                                             <th>Transaction Type</th>
-                                            <th>Currency</th>
                                             <th>Attatchement</th>
                                             <th>remark</th>
                                             <th>Actions</th>
@@ -111,10 +116,13 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $item->amount }}</td>
-                                                <td>{{ $item->departmenName }}</td>
-                                                <td>{{ $item->expenseType }}</td>
-                                                <td>{{ $item->transaction_type }}</td>
                                                 <td style="text-transform: capitalize">{{ $item->currency_type }}</td>
+                                                <td>{{ $item->currency_rate }}</td>
+                                                <td>{{ $item->main_type }}</td>
+                                                <td>{{ $item->transfer_type ?? '--' }}</td>
+                                                <td>{{ $item->departmenName ?? '--' }}</td>
+                                                <td>{{ $item->expenseType ?? '--' }}</td>
+                                                <td>{{ $item->transaction_type ?? '--' }}</td>
                                                 <td>{{ $item->attatchement ? 'Yes' : 'No' }}</td>
                                                 <td>{{ $item->remark }}</td>
                                                 <td>

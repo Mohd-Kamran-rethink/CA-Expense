@@ -12,17 +12,16 @@
     </section>
     <section class="content">
         <div class="card">
-
             <div class="card-body">
-                <form action="{{ isset($expenses) ? url('expenses/edit') : url('expenses/add') }}" method="POST"
-                    enctype="multipart/form-data">
+                <form id="expense-form" action="{{ isset($expenses) ? url('expenses/edit') : url('expenses/add') }}"
+                    method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
                         <input type="hidden" name="expensesId" value="{{ isset($expenses) ? $expenses->id : '' }}">
                         <div class="col-4">
                             <div class="form-group">
                                 <label>Type<span style="color:red">*</span></label>
-                                <select onchange="mainTypeChange(this.value)" name="main_type" id=""
+                                <select onchange="mainTypeChange(this.value)" name="main_type" id="main_type"
                                     class="form-control searchOptions">
                                     <option value="0">--Choose--</option>
                                     <option value="Transfer">Transfer</option>
@@ -35,10 +34,10 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="col-4" style="display: none" id="for-transfer">
+                        <div class="col-4 transfer" style="display: none" id="for-transfer">
                             <div class="form-group" style="display: flex;flex-direction: column">
                                 <label>Transfer Type<span style="color:red">*</span></label>
-                                <select onchange="transferType(this.value)" name="transfer_type" id=""
+                                <select onchange="transferType(this.value)" name="transfer_type" id="transfer_type"
                                     class="form-control searchOptions">
                                     <option value="0">--Choose--</option>
                                     <option value="Internal">Internal Transfer</option>
@@ -51,12 +50,10 @@
                                 @enderror
                             </div>
                         </div>
-                    </div>
-                    <div id="transferType-third" class="row" style="display: none">
-                        <div class="col-4">
+                        <div class="col-4 transferType-third" style="display: none">
                             <div class="form-group" style="display: flex;flex-direction: column">
                                 <label>Transaction Type<span style="color:red">*</span></label>
-                                <select onchange="handleBankInput(this.value)" name="transaction_type" id=""
+                                <select onchange="handleBankInput(this.value)" name="transaction_type" id="transaction_type"
                                     class="form-control searchOptions">
                                     <option value="0">--Choose--</option>
                                     <option value="Bank">Bank</option>
@@ -69,10 +66,10 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="col-4" id="for-transfer">
+                        <div class="col-4 transferType-third" id="for-transfer" style="display: none">
                             <div class="form-group" style="display: flex;flex-direction: column">
                                 <label>Reciever Name<span style="color:red">*</span></label>
-                                <select name="creditor_id" id="" class="form-control searchOptions">
+                                <select name="creditor_id" id="creditor_id" class="form-control searchOptions">
                                     <option value="0">--Choose--</option>
                                     @foreach ($users as $item)
                                         @if ($item->is_admin == 'Yes')
@@ -81,8 +78,6 @@
                                         <option value="{{ $item->id }}">{{ $item->name }} - ( {{ $item->phone }} )
                                         </option>
                                     @endforeach
-
-
                                 </select>
                                 @error('creditor_id')
                                     <span class="text-danger">
@@ -91,34 +86,33 @@
                                 @enderror
                             </div>
                         </div>
-                    </div>
-                    <div class="col-4" id="sender-bank" style="display: none">
-                        <div class="form-group" style="display: flex;flex-direction: column">
-                            <label>Sender Bank<span style="color:red">*</span></label>
-                            <select name="sender_bank" id="" class="form-control searchOptions">
-                                <option value="0">--Choose--</option>
-                                @foreach ($banks as $item)
-                                <option value="{{ $item->id }}">{{ $item->account_number }} - (
-                                    {{ $item->holder_name }} )</option>
-                            @endforeach
-
-                            </select>
-                            @error('sender_bank')
-                                <span class="text-danger">
-                                    {{ $message }}
-                                </span>
-                            @enderror
-                        </div>
-                    </div>
-                    <div id="transferType-internal" class="row" style="display: none">
-                        <div class="col-4">
+                        <div class="col-4 transfer" id="sender-bank" style="display: none">
                             <div class="form-group" style="display: flex;flex-direction: column">
-                                <label>Reciever Bank<span style="color:red">*</span></label>
-                                <select name="receiver_bank" id="" class="form-control searchOptions">
+                                <label>Sender Bank<span style="color:red">*</span></label>
+                                <select name="sender_bank" id="sender_bank" class="form-control searchOptions">
                                     <option value="0">--Choose--</option>
                                     @foreach ($banks as $item)
                                         <option value="{{ $item->id }}">{{ $item->account_number }} - (
-                                            {{ $item->holder_name }} )</option>
+                                            {{ $item->holder_name }} )
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('sender_bank')
+                                    <span class="text-danger">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-4 transferType-internal" style="display: none">
+                            <div class="form-group" style="display: flex;flex-direction: column">
+                                <label>Reciever Bank<span style="color:red">*</span></label>
+                                <select name="receiver_bank" id="receiver_bank" class="form-control searchOptions">
+                                    <option value="0">--Choose--</option>
+                                    @foreach ($banks as $item)
+                                        <option value="{{ $item->id }}">{{ $item->account_number }} - (
+                                            {{ $item->holder_name }} )
+                                        </option>
                                     @endforeach
                                 </select>
                                 @error('receiver_bank')
@@ -128,30 +122,24 @@
                                 @enderror
                             </div>
                         </div>
-
-
                     </div>
                     {{-- expense --}}
                     <div id="expense-forms" class="row" style="display: none">
                         <div class="col-4">
                             <div class="form-group" style="display: flex;flex-direction: column">
                                 <label>Department<span style="color:red">*</span></label>
-                                <select onchange="renderExpenseType(this.value)" name="department_id" id=""
+                                <select onchange="renderExpenseType(this.value)" name="department_id" id="department_id"
                                     class="form-control searchOptions">
                                     <option value="0">--Choose--</option>
                                     @foreach ($departments as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach
                                 </select>
-
-                                @error('name')
-                                    <span class="text-danger">
-                                        {{ $message }}
-                                    </span>
-                                @enderror
+                                <span class="text-danger" id="error_department_id" style="display: none">
+                                    This field is required
+                                </span>
                             </div>
                         </div>
-
                         <div class="col-4">
                             <div class="form-group" id="expense-type-render"
                                 style="display: flex;flex-direction: column">
@@ -163,17 +151,13 @@
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach
                                 </select>
-
-                                @error('name')
+                                @error('expense-type')
                                     <span class="text-danger">
                                         {{ $message }}
                                     </span>
                                 @enderror
                             </div>
                         </div>
-
-
-
                         <div class="col-4">
                             <div class="form-group" style="display: flex;flex-direction: column">
                                 <label>Transaction Type<span style="color:red">*</span></label>
@@ -196,10 +180,10 @@
                                     <option value="0">--Choose--</option>
                                     @foreach ($banks as $item)
                                         <option value="{{ $item->id }}">
-                                            {{ $item->account_number . ' - (' . $item->holder_name . ')' }}</option>
+                                            {{ $item->account_number . ' - (' . $item->holder_name . ')' }}
+                                        </option>
                                     @endforeach
                                 </select>
-
                                 @error('bank_id')
                                     <span class="text-danger">
                                         {{ $message }}
@@ -207,7 +191,6 @@
                                 @enderror
                             </div>
                         </div>
-
                         <div class="col-4">
                             <div class="form-group" style="display: flex;flex-direction: column">
                                 <label>Attatchement</label>
@@ -221,9 +204,8 @@
                                 @enderror
                             </div>
                         </div>
-
-
                     </div>
+                    <hr>
                     <div class="row">
                         <div class="col-4">
                             <div class="form-group" style="display: flex;flex-direction: column">
@@ -232,6 +214,7 @@
                                     <option value="0">--Choose--</option>
                                     <option value="rupee">Rupee</option>
                                     <option value="aed">AED</option>
+                                    <option value="usd">USD</option>
                                 </select>
                                 @error('currency')
                                     <span class="text-danger">
@@ -252,6 +235,19 @@
                                 @enderror
                             </div>
                         </div>
+                        <div class="col-4" style="display: flex;flex-direction: column">
+                            <div class="form-group">
+                                <label>Currency Value<span style="color:red">*</span></label>
+                                <input step="any" type="number" name="currency_rate" class="form-control"
+                                    inputmode="decimal"
+                                    value="{{ isset($expenses) ? $expenses->amount : old('amount') }}">
+                                @error('currency_rate')
+                                    <span class="text-danger">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
                         <div class="col-4">
                             <div class="form-group" style="display: flex;flex-direction: column">
                                 <label>Remark</label>
@@ -266,7 +262,8 @@
                     </div>
                     <div class="row mt-2">
                         <div class="col-12">
-                            <button type="submit" class="btn btn-info">Save</button>
+                            <button onclick="submitForm()" type="submit" id="submit"
+                                class="btn btn-info">Save</button>
                             <a href="{{ url('/expense-type') }}" type="button" class="btn btn-default">Cancel</a>
                         </div>
                     </div>
@@ -295,15 +292,17 @@
         function mainTypeChange(value) {
             if (value == 'Expense') {
                 $('#expense-forms').css('display', 'flex');
-                $('#for-transfer').css('display', 'none');
-                $('#transferType').hide()
+                $('.transferType-third').hide()
+                $('.transferType-internal').hide()
+                $('.transfer').hide()
             } else if (value == 'Transfer') {
                 $('#expense-forms').css('display', 'none');
                 $('#for-transfer').show();
             } else {
                 $('#expense-forms').css('display', 'none');
-                $('#for-transfer').css('display', 'none');
-                $('#transferType').hide()
+                $('.transferType-third').hide()
+                $('.transferType-internal').hide()
+                $('.transfer').hide()
             }
         }
 
@@ -318,12 +317,15 @@
 
         function transferType(value) {
             if (value == "Third Party") {
-                $('#transferType-third').show()
-                $('#transferType-internal').hide()
+
+                $('#sender-bank').hide();
+                $('.transferType-third').show()
+                $('.transferType-internal').hide()
 
             } else if (value == "Internal") {
-                $('#transferType-third').hide()
-                $('#transferType-internal').show()
+                $('#sender-bank').show();
+                $('.transferType-third').hide()
+                $('.transferType-internal').show()
 
             }
         }
