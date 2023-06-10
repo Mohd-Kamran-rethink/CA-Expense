@@ -50,15 +50,33 @@
                         <a href="{{ url('/expenses') }}" class="nav-link {{ Request::is('expenses') ? 'active' : '' }}">
                             <i class="nav-icon fa fa-credit-card"></i>
                             <p>
-                                My Expense
+                                Payment Types
+                            </p>
+                        </a>
+                    </li>
+                    
+                    {{-- users top add --}}
+                    <li class="nav-item  ">
+                        <a href="{{ url('expense-users/debitors') }}" class="nav-link {{ Request::is('debitors') ? 'active' : '' }}">
+                            <i class="nav-icon fa fa-users"></i>
+                            <p>
+                                Debitors
                             </p>
                         </a>
                     </li>
                     <li class="nav-item  ">
-                        <a href="{{ url('/credits') }}" class="nav-link {{ Request::is('credits') ? 'active' : '' }}">
-                            <i class="nav-icon fa fa-credit-card"></i>
+                        <a href="{{ url('expense-users/creditors') }}" class="nav-link {{ Request::is('credits') ? 'active' : '' }}">
+                            <i class="nav-icon fa fa-users"></i>
                             <p>
-                                My Credits
+                                Creditors
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item  ">
+                        <a href="{{ url('/cashinhand') }}" class="nav-link {{ Request::is('cashinhand') ? 'active' : '' }}">
+                            <i class="nav-icon  fa fa-credit-card"></i>
+                            <p>
+                                Cash In Hand
                             </p>
                         </a>
                     </li>

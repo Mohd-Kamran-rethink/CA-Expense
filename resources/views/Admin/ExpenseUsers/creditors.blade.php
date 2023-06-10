@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Payment Types </h1>
+                    <h1>Creditors</h1>
                 </div>
             </div>
             @if (session()->has('msg-success'))
@@ -25,7 +25,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-header d-flex justify-content-between mx-0 px-0">
-                    <form action="{{ url('expenses') }}" method="GET" id="search-form"
+                    {{-- <form action="{{ url('expense-users/creditors') }}" method="GET" id="search-form"
                         class="filters d-flex flex-row col-11 pl-0 mx-0">
 
                         <div class="col-2 ">
@@ -38,17 +38,7 @@
                             <input name="to_date" id="to_date" type="date" class="form-control"
                                 value="{{ isset($endDate) ? $endDate : '' }}">
                         </div>
-                        <div class="col-3">
-                            <label for="">Expense Type</label>
-                            <select name="expense_type" id="expense_type" class="form-control">
-                                <option value="">--Choose--</option>
-                                @foreach ($expenseTypes as $item)
-                                    <option value="{{ $item->id }}"
-                                        {{ isset($expense_type) && $expense_type == $item->id ? 'selected' : '' }}>
-                                        {{ $item->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                       
 
                         <div class="col-2">
                             <label for="">Transaction Type</label>
@@ -77,13 +67,14 @@
                             <label for="" style="visibility: hidden;">filter</label>
                             <button class="btn btn-success form-control" onclick="searchData()">Filter</button>
                         </div>
-                    </form>
+                    </form> --}}
                     <form>
 
                         <div>
 
                             <label for="" style="visibility: hidden;"> d</label>
-                            <a href="expenses/add" class="btn btn-primary form-control">Add Expense</a>
+                            <a href="{{ url('expense-users/creditors/add') }}" class="btn btn-primary form-control">Add
+                                Creditors</a>
                         </div>
                     </form>
 
@@ -96,36 +87,27 @@
                                     <thead>
                                         <tr>
                                             <th>S.No.</th>
-                                            <th>Amount</th>
-                                            <th>Department</th>
-                                            <th>Expense Type</th>
-                                            <th>Transaction Type</th>
-                                            <th>Currency</th>
-                                            <th>Attatchement</th>
-                                            <th>remark</th>
-                                            <th>Actions</th>
+                                            <th>Name</th>
+                                            <th class="text-center">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse ($expenses as $item)
+                                        @forelse ($users as $item)
                                             <tr>
+                                                @if ($item->is_admin == 'Yes')
+                                                    @continue
+                                                @endif
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $item->amount }}</td>
-                                                <td>{{ $item->departmenName }}</td>
-                                                <td>{{ $item->expenseType }}</td>
-                                                <td>{{ $item->transaction_type }}</td>
-                                                <td style="text-transform: capitalize">{{ $item->currency_type }}</td>
-                                                <td>{{ $item->attatchement ? 'Yes' : 'No' }}</td>
-                                                <td>{{ $item->remark }}</td>
-                                                <td>
-                                                    <button title="Delete this expense"
-                                                        onclick="manageModal({{ $item->id }})"
-                                                        class="btn btn-danger"><i class="fa fa-trash"></i></button>
-                                                    @if ($item->attatchement)
-                                                        <a href="{{ url('expenses/download/attatchement/' . $item->id) }}"
-                                                            title="Download attatchement" class="btn btn-success"><i
-                                                                class="fa fa-download"></i></a>
+                                                <td>{{ $item->name }}</td>
+                                                <td class="text-center">
+                                                    @if ($item->role == 'expense_creditor' || $item->role == 'expense_debitor')
+                                                      
+                                                        <button title="Delete this expense"
+                                                            onclick="manageModal({{ $item->id }})"
+                                                            class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                                                    @else <span class="text-center">-   -</span>
                                                     @endif
+                                                    
                                                 </td>
 
 

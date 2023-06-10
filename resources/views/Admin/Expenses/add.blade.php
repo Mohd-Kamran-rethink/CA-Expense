@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>{{ isset($expenses) ? 'Edit Expense' : 'Add Expense' }}</h1>
+                    <h1>{{ isset($expenses) ? 'Edit Payment Types' : 'Add Payment Types' }}</h1>
                     <h6 class="text-danger">* Items marked with an asterisk are required fields and must be completed</h6>
                 </div>
             </div>
@@ -19,8 +19,122 @@
                     @csrf
                     <div class="row">
                         <input type="hidden" name="expensesId" value="{{ isset($expenses) ? $expenses->id : '' }}">
-                        <div class="col-xs-12 col-md-4">
+                        <div class="col-4">
                             <div class="form-group">
+                                <label>Type<span style="color:red">*</span></label>
+                                <select onchange="mainTypeChange(this.value)" name="main_type" id=""
+                                    class="form-control searchOptions">
+                                    <option value="0">--Choose--</option>
+                                    <option value="Transfer">Transfer</option>
+                                    <option value="Expense">Expense</option>
+                                </select>
+                                @error('main_type')
+                                    <span class="text-danger">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-4" style="display: none" id="for-transfer">
+                            <div class="form-group" style="display: flex;flex-direction: column">
+                                <label>Transfer Type<span style="color:red">*</span></label>
+                                <select onchange="transferType(this.value)" name="transfer_type" id=""
+                                    class="form-control searchOptions">
+                                    <option value="0">--Choose--</option>
+                                    <option value="Internal">Internal Transfer</option>
+                                    <option value="Third Party">Third Party</option>
+                                </select>
+                                @error('main_type')
+                                    <span class="text-danger">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                    <div id="transferType-third" class="row" style="display: none">
+                        <div class="col-4">
+                            <div class="form-group" style="display: flex;flex-direction: column">
+                                <label>Transaction Type<span style="color:red">*</span></label>
+                                <select onchange="handleBankInput(this.value)" name="transaction_type" id=""
+                                    class="form-control searchOptions">
+                                    <option value="0">--Choose--</option>
+                                    <option value="Bank">Bank</option>
+                                    <option value="Cash">Cash</option>
+                                </select>
+                                @error('transaction_type')
+                                    <span class="text-danger">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-4" id="for-transfer">
+                            <div class="form-group" style="display: flex;flex-direction: column">
+                                <label>Reciever Name<span style="color:red">*</span></label>
+                                <select name="creditor_id" id="" class="form-control searchOptions">
+                                    <option value="0">--Choose--</option>
+                                    @foreach ($users as $item)
+                                        @if ($item->is_admin == 'Yes')
+                                            @continue
+                                        @endif
+                                        <option value="{{ $item->id }}">{{ $item->name }} - ( {{ $item->phone }} )
+                                        </option>
+                                    @endforeach
+
+
+                                </select>
+                                @error('creditor_id')
+                                    <span class="text-danger">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4" id="sender-bank" style="display: none">
+                        <div class="form-group" style="display: flex;flex-direction: column">
+                            <label>Sender Bank<span style="color:red">*</span></label>
+                            <select name="sender_bank" id="" class="form-control searchOptions">
+                                <option value="0">--Choose--</option>
+                                @foreach ($banks as $item)
+                                <option value="{{ $item->id }}">{{ $item->account_number }} - (
+                                    {{ $item->holder_name }} )</option>
+                            @endforeach
+
+                            </select>
+                            @error('sender_bank')
+                                <span class="text-danger">
+                                    {{ $message }}
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div id="transferType-internal" class="row" style="display: none">
+                        <div class="col-4">
+                            <div class="form-group" style="display: flex;flex-direction: column">
+                                <label>Reciever Bank<span style="color:red">*</span></label>
+                                <select name="receiver_bank" id="" class="form-control searchOptions">
+                                    <option value="0">--Choose--</option>
+                                    @foreach ($banks as $item)
+                                        <option value="{{ $item->id }}">{{ $item->account_number }} - (
+                                            {{ $item->holder_name }} )</option>
+                                    @endforeach
+                                </select>
+                                @error('receiver_bank')
+                                    <span class="text-danger">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+
+                    </div>
+                    {{-- expense --}}
+                    <div id="expense-forms" class="row" style="display: none">
+                        <div class="col-4">
+                            <div class="form-group" style="display: flex;flex-direction: column">
                                 <label>Department<span style="color:red">*</span></label>
                                 <select onchange="renderExpenseType(this.value)" name="department_id" id=""
                                     class="form-control searchOptions">
@@ -38,10 +152,12 @@
                             </div>
                         </div>
 
-                        <div class="col-xs-12 col-md-4">
-                            <div class="form-group" id="expense-type-render">
+                        <div class="col-4">
+                            <div class="form-group" id="expense-type-render"
+                                style="display: flex;flex-direction: column">
                                 <label>Expense Type<span style="color:red">*</span></label>
-                                <select disabled name="expensse_type" id="expense-type" class="form-control searchOptions">
+                                <select disabled name="expensse_type" id="expense-type"
+                                    class="form-control searchOptions">
                                     <option value="0">--Choose--</option>
                                     @foreach ($expenseTypes as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
@@ -55,47 +171,11 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="col-xs-12 col-md-4">
-                            <div class="form-group">
-                                <label>Currency<span style="color:red">*</span></label>
-                                <select name="currency" id="currency" class="form-control">
-                                    <option value="0">--Choose--</option>
-                                    <option value="rupee">Rupee</option>
-                                    <option value="aed">AED</option>
-                                </select>
-                                @error('currency')
-                                    <span class="text-danger">
-                                        {{ $message }}
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
 
-                        <div class="col-xs-12 col-md-4">
-                            <div class="form-group">
-                                <label>Credited To</label>
-                                <select name="creditor_id" id="creditor_id" class="form-control searchOptions">
-                                    <option value="0">--Choose--</option>
-                                    @foreach ($users as $item)
-                                        @if ($item->is_admin == 'Yes')
-                                            @continue
-                                        @endif
-                                        <option value="{{ $item->id }}" style="text-transform: capitalize">
-                                            {{ $item->name }} - (<span>{{ $item->role }}</span>)
-                                        </option>
-                                    @endforeach
-                                </select>
 
-                                @error('creditor_id')
-                                    <span class="text-danger">
-                                        {{ $message }}
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
 
-                        <div class="col-xs-12 col-md-4">
-                            <div class="form-group">
+                        <div class="col-4">
+                            <div class="form-group" style="display: flex;flex-direction: column">
                                 <label>Transaction Type<span style="color:red">*</span></label>
                                 <select name="transactionType" id="transactionType" class="form-control searchOptions">
                                     <option value="0">--Choose--</option>
@@ -109,8 +189,8 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="col-xs-12 col-md-4">
-                            <div class="form-group">
+                        <div class="col-4">
+                            <div class="form-group" style="display: flex;flex-direction: column">
                                 <label>Debiter Bank<span style="color:red">*</span></label>
                                 <select name="bank_id" id="bank_id" class="form-control searchOptions">
                                     <option value="0">--Choose--</option>
@@ -127,7 +207,40 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="col-xs-12 col-md-4">
+
+                        <div class="col-4">
+                            <div class="form-group" style="display: flex;flex-direction: column">
+                                <label>Attatchement</label>
+                                <input type="file" name="attatchement" class="form-control"
+                                    data-validation="required"
+                                    value="{{ isset($expenses) ? $expenses->amount : old('amount') }}">
+                                @error('attatchement')
+                                    <span class="text-danger">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="form-group" style="display: flex;flex-direction: column">
+                                <label>Currency<span style="color:red">*</span></label>
+                                <select name="currency" id="currency" class="form-control">
+                                    <option value="0">--Choose--</option>
+                                    <option value="rupee">Rupee</option>
+                                    <option value="aed">AED</option>
+                                </select>
+                                @error('currency')
+                                    <span class="text-danger">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-4" style="display: flex;flex-direction: column">
                             <div class="form-group">
                                 <label>Amount<span style="color:red">*</span></label>
                                 <input type="number" name="amount" class="form-control" data-validation="required"
@@ -139,22 +252,8 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="col-xs-12 col-md-4">
-                            <div class="form-group">
-                                <label>Attatchement</label>
-                                <input type="file" name="attatchement" class="form-control" data-validation="required"
-                                    value="{{ isset($expenses) ? $expenses->amount : old('amount') }}">
-                                @error('attatchement')
-                                    <span class="text-danger">
-                                        {{ $message }}
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <br>
-
                         <div class="col-4">
-                            <div class="form-group">
+                            <div class="form-group" style="display: flex;flex-direction: column">
                                 <label>Remark</label>
                                 <textarea name="remark" id="" cols="1" rows="" class="form-control"></textarea>
                                 @error('remark')
@@ -191,7 +290,42 @@
                     },
                 });
             }
+        }
 
+        function mainTypeChange(value) {
+            if (value == 'Expense') {
+                $('#expense-forms').css('display', 'flex');
+                $('#for-transfer').css('display', 'none');
+                $('#transferType').hide()
+            } else if (value == 'Transfer') {
+                $('#expense-forms').css('display', 'none');
+                $('#for-transfer').show();
+            } else {
+                $('#expense-forms').css('display', 'none');
+                $('#for-transfer').css('display', 'none');
+                $('#transferType').hide()
+            }
+        }
+
+        function handleBankInput(value) {
+            if (value === "Bank") {
+                $('#sender-bank').show();
+            } else {
+                $('#sender-bank').hide();
+            }
+
+        }
+
+        function transferType(value) {
+            if (value == "Third Party") {
+                $('#transferType-third').show()
+                $('#transferType-internal').hide()
+
+            } else if (value == "Internal") {
+                $('#transferType-third').hide()
+                $('#transferType-internal').show()
+
+            }
         }
     </script>
 @endsection

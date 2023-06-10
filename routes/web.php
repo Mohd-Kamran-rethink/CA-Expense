@@ -57,3 +57,13 @@ Route::middleware('ValidateSuperManager')->prefix('departments')->group(function
 Route::middleware('CommonUsers')->prefix('credits')->group(function () {
     Route::get('', [CreditsController::class, 'list'])->name('list');
 });
+
+// crertordir
+Route::middleware('CommonUsers')->prefix('expense-users')->group(function () {
+    Route::get('creditors', [ExpenseController::class, 'creditors'])->name('creditors');
+    Route::get('creditors/add', [ExpenseController::class, 'creditorsAddFrom'])->name('creditorsAddFrom');
+    Route::post('creditor/add', [ExpenseController::class, 'creditorAdd'])->name('creditorAdd');
+    Route::get('debitors', [ExpenseController::class, 'debitors'])->name('debitors');
+    Route::get('debitors/add', [ExpenseController::class, 'debitorsAddFrom'])->name('debitorsAddFrom');
+    Route::post('debitors/add', [ExpenseController::class, 'debitorAdd'])->name('debitorAdd');
+   });

@@ -74,11 +74,7 @@ class ExpenseController extends Controller
     // expesesses
     public function listMyExpenses(Request $req)
     {
-        $expenses = Expense::join('expense_types', 'expenses.expense_type_id', '=', 'expense_types.id')
-            ->join('departments', 'expenses.department_id', '=', 'departments.id')
-            ->select('expenses.*', 'departments.name as departmenName', 'expense_types.name as expenseType')
-            ->where('expenses.user_id', '=', session('user')->id)
-            ->get();
+       
         $startDate = $req->query('from_date') ?? null;
         $endDate = $req->query('to_date') ?? null;
         $expense_type = $req->query('expense_type') ?? null;
@@ -94,8 +90,8 @@ class ExpenseController extends Controller
         }
 
         // query
-        $expenses  = Expense::join('expense_types', 'expenses.expense_type_id', '=', 'expense_types.id')
-            ->join('departments', 'expenses.department_id', '=', 'departments.id')
+        $expenses  = Expense::leftjoin('expense_types', 'expenses.expense_type_id', '=', 'expense_types.id')
+            ->leftjoin('departments', 'expenses.department_id', '=', 'departments.id')
             ->select('expenses.*', 'departments.name as departmenName', 'expense_types.name as expenseType')
             ->where('expenses.user_id', '=', session('user')->id)
             // conditional
@@ -136,12 +132,15 @@ class ExpenseController extends Controller
     {
         $expense = new Expense();
         $expense->user_id = session('user')->id;
+        $expense->main_type = $req->main_type;
+        $expense->transfer_type = $req->transfer_type;
+        $expense->sender_bank = $req->sender_bank;
+        $expense->receiver_bank = $req->receiver_bank;
         $expense->department_id = $req->department_id;
         $expense->expense_type_id = $req->expensse_type;
+        $expense->transaction_type = $req->transactionType;
         $expense->currency_type = $req->currency;
         $expense->creditor_id = $req->creditor_id;
-        $expense->bank_id = $req->bank_id;
-        $expense->transaction_type = $req->transactionType;
         $expense->amount = $req->amount;
         $expense->remark = $req->remark;
         if ($req->file('attatchement')) {
@@ -202,5 +201,54 @@ class ExpenseController extends Controller
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         ];
         return response()->download($file, $expense->attatchement, $headers);
+    }
+
+
+    // creditors
+    public function creditors()
+    {
+        $users = User::where('is_admin', "=", 'No')->get();
+        return view('Admin.ExpenseUsers.creditors', compact('users'));
+    }
+    public function debitors()
+    {
+        $users = User::where('role', "!=", 'manager')->where('role', "!=", 'customer_care_manager')->where('role', '=', 'expense_debitors')->get();
+        return view('Admin.ExpenseUsers.debitors', compact('users'));
+    }
+
+    public function creditorsAddFrom()
+    {
+        return view('Admin.ExpenseUsers.Add');
+    }
+    public function creditorAdd(Request $req)
+    {
+        $user = new User();
+        $user->name = $req->name;
+        $user->phone = $req->phone;
+        $user->role = 'expense_creditor';
+        $result = $user->save();
+        if ($result) {
+            return redirect('/expense-users/creditors')->with(['msg-success' => 'Creditor  has been added Successfully.']);
+        } else {
+            return redirect('/expense-users/creditors')->with(['msg-error' => 'Something went wrong could not add creditors .']);
+        }
+    }
+
+    public function debitorsAddFrom()
+    {
+        return view('Admin.ExpenseUsers.AddDebitor');
+    }
+    public function debitorAdd(Request $req)
+    {
+        $user = new User();
+        $user->name = $req->name;
+        $user->phone = $req->phone;
+        $user->role = 'expense_debitors';
+        $result = $user->save();
+        if ($result) {
+            return redirect('/expense-users/debitors')->with(['msg-success' => 'Debitor  has been added Successfully.']);
+        } else {
+            return redirect('/expense-users/debitors')->with(['msg-error' => 'Debitor    went wrong could not add creditors .']);
+        }
     }
 }
