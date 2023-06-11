@@ -72,14 +72,14 @@
                             </p>
                         </a>
                     </li>
-                    <li class="nav-item  ">
-                        <a href="{{ url('/cashinhand') }}" class="nav-link {{ Request::is('cashinhand') ? 'active' : '' }}">
+                    {{-- <li class="nav-item  ">
+                        <a href="{{ url('/pettycash') }}" class="nav-link {{ Request::is('pettycash') ? 'active' : '' }}">
                             <i class="nav-icon  fa fa-credit-card"></i>
                             <p>
-                                Cash In Hand
+                               PettyCash
                             </p>
                         </a>
-                    </li>
+                    </li> --}}
                 @endif
             </ul>
         </nav>

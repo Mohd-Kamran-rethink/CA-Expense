@@ -31,6 +31,10 @@ class defaultData extends ServiceProvider
             if ($user) {
                 $userData = User::find($user->id);
             }
+            else
+            {
+                return redirect('/');
+            }
 
 
             $view->with([

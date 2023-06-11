@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CreditsController;
 use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\PettcashController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 // dashboard
-Route::get('/dashboard', [AuthController::class, 'dashbaod'])->name('dashbaod');
+Route::get('/dashboard', [AuthController::class, 'dashbaod'])->name('dashbaod')->middleware('CommonUsers');
 
 // AUTH ROUTES
 Route::get('/', [AuthController::class, 'loginView'])->name('loginView');
@@ -66,4 +67,12 @@ Route::middleware('CommonUsers')->prefix('expense-users')->group(function () {
     Route::get('debitors', [ExpenseController::class, 'debitors'])->name('debitors');
     Route::get('debitors/add', [ExpenseController::class, 'debitorsAddFrom'])->name('debitorsAddFrom');
     Route::post('debitors/add', [ExpenseController::class, 'debitorAdd'])->name('debitorAdd');
-   });
+});
+
+// petty cash
+Route::middleware('CommonUsers')->prefix('pettycash')->group(function () {
+    Route::get('', [PettcashController::class, 'list'])->name('list');
+    Route::get('/add', [PettcashController::class, 'addForm'])->name('addForm');
+    Route::post('/add', [PettcashController::class, 'add'])->name('add');
+});
+   

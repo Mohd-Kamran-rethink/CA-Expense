@@ -15,7 +15,12 @@ class ManagerMiddleware
      * @return mixed
      */
     public function handle($request, Closure $next)
-    {
+    {   
+        if(!session('user'))
+        {
+            return redirect('/');
+            
+        }
         $user = User::find(session('user')->id);
         if ($user->role == 'manager' || $user->role == 'customer_care_manager') {
             return $next($request);

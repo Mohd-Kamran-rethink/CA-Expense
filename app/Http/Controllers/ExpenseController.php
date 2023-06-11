@@ -114,6 +114,7 @@ class ExpenseController extends Controller
             ->whereDate('expenses.created_at', '>=', date('Y-m-d', strtotime($startDate)))
             ->whereDate('expenses.created_at', '<=', date('Y-m-d', strtotime($endDate)))
             ->get();
+        
         $expenseTypes = ExpenseType::get();
         $startDate = $startDate->toDateString();
         $endDate = $endDate->toDateString();
@@ -131,6 +132,7 @@ class ExpenseController extends Controller
     // add expenses main function
     public function addExpense(Request $req)
     {
+        $req->validate(['amount'=>'required']);
         $expense = new Expense();
         $expense->user_id = session('user')->id;
         $expense->main_type = $req->main_type;
@@ -144,6 +146,7 @@ class ExpenseController extends Controller
         $expense->creditor_id = $req->creditor_id;
         $expense->bank_id = $req->bank_id;
         $expense->amount = $req->amount;
+        $expense->accounting_type = $req->accounting_type;
         $expense->currency_rate = $req->currency_rate;
         $expense->remark = $req->remark;
         if ($req->file('attatchement')) {

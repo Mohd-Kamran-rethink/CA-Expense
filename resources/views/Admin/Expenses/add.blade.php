@@ -66,6 +66,22 @@
                                 @enderror
                             </div>
                         </div>
+                        <div class="col-4 transferType-third" style="display: none">
+                            <div class="form-group" style="display: flex;flex-direction: column">
+                                <label>Accounting Type<span style="color:red">*</span></label>
+                                <select  name="accounting_type" id="accounting_type"
+                                    class="form-control searchOptions">
+                                    <option value="0">--Choose--</option>
+                                    <option value="Debit">Debit</option>
+                                    <option value="Credit">Credit</option>
+                                </select>
+                                @error('accounting_type')
+                                    <span class="text-danger">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
                         <div class="col-4 transferType-third" id="for-transfer" style="display: none">
                             <div class="form-group" style="display: flex;flex-direction: column">
                                 <label>Reciever Name<span style="color:red">*</span></label>
