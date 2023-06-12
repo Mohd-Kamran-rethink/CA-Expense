@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Expense;
+
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -30,8 +31,7 @@ class AuthController extends Controller
             'email' => 'required',
             'password' => 'required'
         ]);
-        $user = User::where('email', '=',$req->email)->first();
-        dd($user);        
+        $user = User::where('email', '=', $req->email)->first();
         if ($user) {
             if (Hash::check($req->password, $user->password)) {
                 session()->put('user', $user);
