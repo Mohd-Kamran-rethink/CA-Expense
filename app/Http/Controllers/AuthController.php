@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Expense;
+use App\User;
 use Carbon\Carbon;
-use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -30,7 +30,7 @@ class AuthController extends Controller
             'email' => 'required',
             'password' => 'required'
         ]);
-        $user = User::where('email', '=', $req->email)->first();
+        $user = User::where('email', '=',$req->email)->first();
         dd($user);
         if ($user) {
             if (Hash::check($req->password, $user->password)) {
