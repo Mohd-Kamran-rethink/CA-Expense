@@ -31,6 +31,7 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
         $user = User::where('email', '=', $req->email)->first();
+        dd($user);
         if ($user) {
             if (Hash::check($req->password, $user->password)) {
                 session()->put('user', $user);
